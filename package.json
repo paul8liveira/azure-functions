@@ -1,0 +1,13 @@
+{
+  "name": "azfunc",
+  "version": "0.0.1",
+  "description": "Funções do azure para alegrar a festa",
+  "scripts": {
+    "start": "func start",
+    "test": "echo \"No tests yet...\""
+  },
+  "dependencies": {
+    "@slack/web-api": "^5.8.0"
+  },
+  "devDependencies": {}
+}
