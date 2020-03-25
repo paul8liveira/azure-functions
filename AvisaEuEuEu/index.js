@@ -14,19 +14,24 @@ module.exports = async function (context, myTimer) {
     if (myTimer.isPastDue)
         context.log('JavaScript is running late!');
 
-    const userProfile = await web.usergroups.profile.get({
-        user: process.env['SLACK_IM_TO_POST'],
-    });    
+    try {
+        const info = await web.users.info({ 
+            user: process.env['SLACK_IM_TO_POST'] 
+        });
 
-    const weekDay = new Date().getDay();
-    const text = `Olá *${userProfile.display_name}*! \nTo passando aqui só pra lembrar que ta na hora de trocar o nome para *${dayOfWeekNames[weekDay]}*. \n :squirrel::shipit:`;
+        const weekDay = new Date().getDay();
+        const text = `Olá *${info.user.profile.display_name}*! \nTo passando aqui só pra lembrar que ta na hora de trocar o nome para *${dayOfWeekNames[weekDay]}*. \n :squirrel::shipit:`;
 
-    const result = await web.chat.postMessage({
-        text: text,
-        channel: process.env['SLACK_IM_TO_POST'],
-    });
-    
-    // The result contains an identifier for the message, `ts`.
-    context.log(`Successfully send message: ${JSON.stringify(result)}`);
+        const result = await web.chat.postMessage({
+            text: text,
+            channel: process.env['SLACK_IM_TO_POST'],
+        });
+        
+        // The result contains an identifier for the message, `ts`.
+        context.log(`Successfully send message: ${JSON.stringify(result)}`);        
+    } 
+    catch (error) {
+        context.log(error);
+    }
     context.done();
 };
