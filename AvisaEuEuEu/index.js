@@ -14,8 +14,12 @@ module.exports = async function (context, myTimer) {
     if (myTimer.isPastDue)
         context.log('JavaScript is running late!');
 
+    const userProfile = await web.usergroups.profile.get({
+        user: process.env['SLACK_IM_TO_POST'],
+    });    
+
     const weekDay = new Date().getDay();
-    const text = `Olá *${dayOfWeekNames[weekDay-1]}*! \nTo passando aqui só pra lembrar que ta na hora de trocar o nome para *${dayOfWeekNames[weekDay]}*. \n :squirrel::shipit:`;
+    const text = `Olá *${userProfile.display_name}*! \nTo passando aqui só pra lembrar que ta na hora de trocar o nome para *${dayOfWeekNames[weekDay]}*. \n :squirrel::shipit:`;
 
     const result = await web.chat.postMessage({
         text: text,
