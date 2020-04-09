@@ -9,7 +9,7 @@ const dayOfWeekNames = {
 };
 
 module.exports = async function (context, myTimer) {
-    const web = new WebClient(process.env['SLACK_API_TOKEN']);
+    const web = new WebClient(process.env['USER_ACCESS_TOKEN']);
     
     if (myTimer.isPastDue)
         context.log('JavaScript is running late!');
@@ -20,8 +20,16 @@ module.exports = async function (context, myTimer) {
         });
 
         const weekDay = new Date().getDay();
-        const text = `Olá *${info.user.profile.display_name}*! \nTo passando aqui só pra lembrar que ta na hora de trocar o nome para *${dayOfWeekNames[weekDay]}*. \n :squirrel::shipit:`;
 
+        await web.users.profile.set({
+            token: process.env['AUTH_ACCESS_TOKEN'],
+            user: process.env['SLACK_IM_TO_POST'],
+            profile: { 
+                display_name: dayOfWeekNames[weekDay]
+            }
+        });
+
+        const text = `Olá *${info.user.profile.display_name}* do passado! \nAcabei de trocar seu nome para *${dayOfWeekNames[weekDay]}*. \n :squirrel::shipit:`;
         const result = await web.chat.postMessage({
             text: text,
             channel: process.env['SLACK_IM_TO_POST'],
